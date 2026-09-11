@@ -53,8 +53,8 @@
 
 - shell:
     - [
-        git submodule update --init --recursive --remote --checkout,
-        Installing submodules,
+        git submodule update --init --recursive --checkout,
+        Installing pinned submodules,
       ]
     - [~/.dotfiles/fzf/install --all, Installing fzf]
     # Register curser's URI handler as the system default for cursor:// links.

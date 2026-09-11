@@ -145,7 +145,7 @@ E5 can proceed in parallel with E2–E4 once licensing is resolved. E6 is not a 
 ### E2.3 Reproducible dependencies — Planned
 
 - [ ] Remove `--remote` from normal submodule installation and consume committed gitlinks.
-- [ ] Move submodule advancement into a separate explicit maintenance workflow.
+- [x] Move submodule advancement into a repository-owned pre-commit workflow that stages updated gitlinks for review.
 - [x] Eliminate duplicate Starship installation ownership; `install` owns installation and Starship uses its built-in default prompt.
 - [ ] Replace unpinned `curl | sh` provisioning with versioned, integrity-checked inputs.
 - [ ] Decide whether `complete-alias` remains a submodule or is replaced by native completion.
@@ -163,7 +163,7 @@ E5 can proceed in parallel with E2–E4 once licensing is resolved. E6 is not a 
 - [ ] Test repeat installation with no unexpected changes.
 - [ ] Test default and explicit profile selection, including missing-profile rejection.
 - [ ] Expand ShellCheck coverage beyond the maintained installer after resolving legacy shell findings.
-- [ ] Verify bootstrap does not advance dependency revisions.
+- [ ] Verify bootstrap does not advance dependency revisions beyond the committed gitlinks.
 
 ### Acceptance criteria
 
@@ -306,7 +306,7 @@ The root roadmap owns portfolio dependencies and cross-repository decisions. The
 
 - [ ] Build and install `catp` artifacts in isolation.
 - [ ] Exercise installer dry-run, fresh-home, repeat-run, and profile scenarios.
-- [ ] Assert normal bootstrap does not advance submodules.
+- [ ] Assert normal bootstrap does not advance submodules beyond the committed gitlinks.
 - [ ] Test shell startup with optional tools absent.
 
 ### E6.3 Security and freshness checks — Planned
@@ -314,7 +314,7 @@ The root roadmap owns portfolio dependencies and cross-repository decisions. The
 - [ ] Scan tracked changes for secrets.
 - [ ] Detect privileged network listeners and unsafe force-operation regressions in retained helpers.
 - [ ] Check CLI documentation against parser output.
-- [ ] Review dependency and submodule updates as explicit maintenance changes.
+- [ ] Verify commit-time submodule refreshes remain visible as reviewable gitlink changes.
 
 ### Acceptance criteria
 

@@ -48,7 +48,7 @@ The repository currently contains five domains:
    - `.agents/imports.json` is tracked.
    - Most `.agents/`, `.cursor/agents/`, `.cursor/skills/`, and `.claude/` content is generated or ignored and depends on an external governance checkout.
 
-The `dotbot`, `complete-alias`, and `fzf` directories are upstream Git submodules. Their committed gitlinks are the reviewable pins, although the current installer advances them to remote branch heads during bootstrap; correcting that non-reproducible behavior is a roadmap priority.
+The `dotbot`, `complete-alias`, and `fzf` directories are upstream Git submodules. Their committed gitlinks are the installation source of truth. The repository's pre-commit hook advances each top-level submodule to its configured remote branch and stages the resulting gitlink before every commit.
 
 ## Bootstrap
 
@@ -63,7 +63,7 @@ The `dotbot`, `complete-alias`, and `fzf` directories are upstream Git submodule
 
 ### Prerequisites used by the current installer
 
-- Bash, Git, and Python
+- Bash, Git, Python, and [`pre-commit`](https://pre-commit.com/)
 - `envsubst` (normally provided by `gettext`)
 - `curl`
 - Dotbot's Python requirements
@@ -90,10 +90,19 @@ The configured shell also integrates optional tools including FZF, Starship, jq,
 The current `install` command:
 
 - deletes regular (non-symlink) versions of `~/.bashrc`, `~/.profile`, `~/.bash_logout`, and `~/.ssh/config` without creating backups;
-- runs `git submodule update --remote`, so installed dependency revisions can differ from the repository's committed pins;
 - executes remote Starship installation code through `curl | sh` when Starship is not already installed.
 
 Review the script and back up existing configuration before running it. A preflight, backup, and dry-run workflow is planned.
+
+### Commit-time submodule refresh
+
+Install the repository hook once after cloning:
+
+```bash
+pre-commit install
+```
+
+Every commit attempt runs `bin/update-submodules.py`. The hook advances all top-level submodules to the remote branches configured in `.gitmodules`, stages their gitlinks, and refuses to overwrite direct uncommitted changes inside a submodule. Because this operation requires network access, commits made offline will fail until the remotes are reachable. Bootstrap installs the committed gitlinks rather than fetching newer revisions independently.
 
 ### Profile-aware invocation
 

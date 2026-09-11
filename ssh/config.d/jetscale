@@ -1,3 +1,11 @@
+Host agent-vm-swe
+  HostName desktop-swe.tailc71ba4.ts.net
+  User swe
+  IdentityFile ~/.ssh/id_ed25519_passphraseless
+  IdentitiesOnly yes
+  ServerAliveInterval 30
+  ServerAliveCountMax 3
+
 Host agent-vm-cursor
   HostName i-0d3b9d0d4bb26d782
   User cursor
