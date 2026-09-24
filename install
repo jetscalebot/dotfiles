@@ -91,4 +91,56 @@ if ! command -v starship >/dev/null 2>&1; then
     curl -fsSL https://starship.rs/install.sh | sh -s -- --bin-dir ~/.local/bin -y
 fi
 
+# Starship's default symbols use Nerd Font glyphs. Install JetBrainsMono Nerd Font when
+# missing so those icons render in terminals that use the system font. Fail soft.
+install_nerd_font_if_missing() {
+    local font_family_query="JetBrainsMono Nerd Font"
+    local font_dir="${HOME}/.local/share/fonts/NerdFonts/JetBrainsMono"
+    local release="v3.4.0"
+    local zip_url="https://github.com/ryanoasis/nerd-fonts/releases/download/${release}/JetBrainsMono.zip"
+    local tmp_zip
+
+    if command -v fc-list >/dev/null 2>&1; then
+        if fc-list : family 2>/dev/null | grep -Fqx "${font_family_query}" \
+            || fc-list 2>/dev/null | grep -qi "JetBrainsMono Nerd Font"; then
+            echo "Nerd Font already present (${font_family_query})."
+            return 0
+        fi
+    elif [[ -d "${font_dir}" ]] && compgen -G "${font_dir}/*.ttf" >/dev/null 2>&1; then
+        echo "Nerd Font files already present under ${font_dir}."
+        return 0
+    fi
+
+    if ! command -v curl >/dev/null 2>&1; then
+        echo "Warning: curl missing; skipping Nerd Font install." >&2
+        return 0
+    fi
+    if ! command -v unzip >/dev/null 2>&1; then
+        echo "Warning: unzip missing; skipping Nerd Font install." >&2
+        return 0
+    fi
+
+    echo "Installing ${font_family_query} (${release}) for Starship icons..."
+    tmp_zip="$(mktemp "${TMPDIR:-/tmp}/JetBrainsMono-XXXXXX.zip")"
+    if ! curl -fsSL -o "${tmp_zip}" "${zip_url}"; then
+        echo "Warning: failed to download Nerd Font from ${zip_url}; continuing." >&2
+        rm -f "${tmp_zip}"
+        return 0
+    fi
+    mkdir -p "${font_dir}"
+    if ! unzip -o -q "${tmp_zip}" -d "${font_dir}"; then
+        echo "Warning: failed to extract Nerd Font archive; continuing." >&2
+        rm -f "${tmp_zip}"
+        return 0
+    fi
+    rm -f "${tmp_zip}"
+    if command -v fc-cache >/dev/null 2>&1; then
+        fc-cache -f "${HOME}/.local/share/fonts" >/dev/null 2>&1 || true
+    fi
+    echo "Nerd Font installed under ${font_dir}."
+    echo "Point your terminal font at '${font_family_query}' (or another Nerd Font) if icons still show as missing glyphs."
+}
+
+install_nerd_font_if_missing
+
 echo "Dotfiles setup complete!"

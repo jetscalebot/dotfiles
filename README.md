@@ -90,7 +90,8 @@ The configured shell also integrates optional tools including FZF, Starship, jq,
 The current `install` command:
 
 - deletes regular (non-symlink) versions of `~/.bashrc`, `~/.profile`, `~/.bash_logout`, and `~/.ssh/config` without creating backups;
-- executes remote Starship installation code through `curl | sh` when Starship is not already installed.
+- executes remote Starship installation code through `curl | sh` when Starship is not already installed;
+- downloads JetBrainsMono Nerd Font from GitHub releases when that font family is not already installed.
 
 Review the script and back up existing configuration before running it. A preflight, backup, and dry-run workflow is planned.
 
@@ -120,7 +121,7 @@ The profile defaults to `home`, the only current bootstrap profile. An explicit 
 - `.env.<profile>` is required and supplies profile-specific values; `.env.home` is the current profile.
 - `.gitconfig.<profile>` is selected when present; otherwise `.gitconfig.default` is used.
 - Repository inputs are resolved relative to the checkout, so `install` can also be launched from another working directory.
-- Starship is installed when missing and uses its built-in default prompt; the repository intentionally does not link a custom `starship.toml` or require a Nerd Font.
+- Starship is installed when missing and uses its built-in default prompt; the repository does not link a custom `starship.toml`. When a Nerd Font is missing, `install` downloads JetBrainsMono Nerd Font into `~/.local/share/fonts` (fail soft) so default Starship glyphs can render. Configure the terminal to use that font (or another Nerd Font); remote viewers that ship their own font may still show missing glyphs.
 
 `~/code/dotfiles` is the canonical checkout. The `~/.dotfiles` compatibility symlink preserves paths used by Dotbot and shell configuration.
 
